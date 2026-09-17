@@ -1,0 +1,412 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Racing Login</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at 80% 20%, rgba(255, 0, 50, 0.18), transparent 30%),
+                linear-gradient(135deg, #050505, #111 50%, #050505);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            color: white;
+        }
+
+        /* Racing speed lines */
+        body::before,
+        body::after {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                #ff1744,
+                transparent
+            );
+            opacity: 0.5;
+            transform: rotate(-20deg);
+        }
+
+        body::before {
+            top: 25%;
+            left: -20%;
+            animation: speed 3s linear infinite;
+        }
+
+        body::after {
+            bottom: 20%;
+            right: -20%;
+            animation: speed 4s linear infinite reverse;
+        }
+
+        @keyframes speed {
+            from {
+                transform: translateX(-100%) rotate(-20deg);
+            }
+            to {
+                transform: translateX(100%) rotate(-20deg);
+            }
+        }
+
+        /* Main container */
+        .login-container {
+            position: relative;
+            z-index: 2;
+            width: 390px;
+            padding: 42px 38px;
+            background: rgba(15, 15, 15, 0.88);
+            border: 1px solid rgba(255, 23, 68, 0.5);
+            border-radius: 18px;
+            backdrop-filter: blur(15px);
+            box-shadow:
+                0 0 25px rgba(255, 23, 68, 0.2),
+                0 20px 60px rgba(0, 0, 0, 0.7);
+        }
+
+        /* Top racing stripe */
+        .stripe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            border-radius: 18px 18px 0 0;
+            background: linear-gradient(
+                90deg,
+                #ff1744 0%,
+                #ff1744 40%,
+                white 40%,
+                white 44%,
+                #ff1744 44%,
+                #ff1744 100%
+            );
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            font-size: 42px;
+            font-weight: 900;
+            font-style: italic;
+            letter-spacing: -2px;
+            text-transform: uppercase;
+        }
+
+        .logo h1 span {
+            color: #ff1744;
+            text-shadow: 0 0 15px rgba(255, 23, 68, 0.7);
+        }
+
+        .logo p {
+            margin-top: 5px;
+            color: #888;
+            font-size: 12px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+
+        /* Input fields */
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #aaa;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .input-box {
+            position: relative;
+        }
+
+        .input-box input {
+            width: 100%;
+            padding: 14px 16px;
+            background: #090909;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: white;
+            outline: none;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .input-box input:focus {
+            border-color: #ff1744;
+            box-shadow: 0 0 12px rgba(255, 23, 68, 0.25);
+        }
+
+        .input-box input::placeholder {
+            color: #555;
+        }
+
+        /* Options */
+        .options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0 25px;
+            font-size: 12px;
+        }
+
+        .remember {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            color: #aaa;
+        }
+
+        .remember input {
+            accent-color: #ff1744;
+        }
+
+        .forgot {
+            color: #ff1744;
+            text-decoration: none;
+        }
+
+        .forgot:hover {
+            text-decoration: underline;
+        }
+
+        /* Login button */
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            background: #ff1744;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+
+        .login-btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255,255,255,0.35),
+                transparent
+            );
+            transition: 0.5s;
+        }
+
+        .login-btn:hover::before {
+            left: 100%;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px rgba(255, 23, 68, 0.55);
+        }
+
+        .login-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Divider */
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 25px 0;
+            color: #555;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+            height: 1px;
+            background: #333;
+            flex: 1;
+        }
+
+        /* Social buttons */
+        .social-login {
+            display: flex;
+            gap: 10px;
+        }
+
+        .social-btn {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #333;
+            border-radius: 8px;
+            background: #0b0b0b;
+            color: #bbb;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .social-btn:hover {
+            border-color: #ff1744;
+            color: white;
+        }
+
+        /* Signup */
+        .signup {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 12px;
+            color: #777;
+        }
+
+        .signup a {
+            color: #ff1744;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* Decorative racing number */
+        .number {
+            position: absolute;
+            right: -25px;
+            bottom: -35px;
+            font-size: 110px;
+            font-weight: 900;
+            font-style: italic;
+            color: rgba(255, 255, 255, 0.025);
+            pointer-events: none;
+        }
+
+        /* Mobile */
+        @media (max-width: 480px) {
+            .login-container {
+                width: 90%;
+                padding: 35px 25px;
+            }
+
+            .logo h1 {
+                font-size: 34px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-container">
+
+        <div class="stripe"></div>
+
+        <div class="logo">
+            <h1>RACE<span>X</span></h1>
+            <p>Feel The Speed</p>
+        </div>
+
+        <form onsubmit="login(event)">
+
+            <div class="input-group">
+                <label>Email</label>
+                <div class="input-box">
+                    <input
+                        type="email"
+                        placeholder="Enter your email"
+                        required
+                    >
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Password</label>
+                <div class="input-box">
+                    <input
+                        type="password"
+                        placeholder="Enter your password"
+                        required
+                    >
+                </div>
+            </div>
+
+            <div class="options">
+
+                <label class="remember">
+                    <input type="checkbox">
+                    Remember me
+                </label>
+
+                <a href="#" class="forgot">
+                    Forgot Password?
+                </a>
+
+            </div>
+
+            <button class="login-btn" type="submit">
+                Start Racing
+            </button>
+
+        </form>
+
+        <div class="divider">
+            Or continue with
+        </div>
+
+        <div class="social-login">
+            <button class="social-btn">Google</button>
+            <button class="social-btn">GitHub</button>
+        </div>
+
+        <div class="signup">
+            Don't have an account?
+            <a href="#">Create Account</a>
+        </div>
+
+        <div class="number">01</div>
+
+    </div>
+
+    <script>
+        function login(event) {
+            event.preventDefault();
+
+            const button = document.querySelector(".login-btn");
+
+            button.innerText = "IGNITION...";
+
+            setTimeout(() => {
+                button.innerText = "START RACING";
+                alert("Login demo successful!");
+            }, 1200);
+        }
+    </script>
+
+</body>
+</html>
+```
