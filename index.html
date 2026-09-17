@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>F1 Tracks</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #050509;
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ---------- BACKGROUND GLOW ---------- */
+
+        body::before {
+            content: "";
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            background: #e10600;
+            filter: blur(180px);
+            opacity: 0.18;
+            top: -250px;
+            left: -200px;
+            z-index: -2;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            background: #0077ff;
+            filter: blur(180px);
+            opacity: 0.12;
+            bottom: -200px;
+            right: -150px;
+            z-index: -2;
+        }
+
+        /* ---------- NAVBAR ---------- */
+
+        nav {
+            height: 75px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 7%;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            background: rgba(5,5,9,0.65);
+            backdrop-filter: blur(15px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: 900;
+            letter-spacing: 2px;
+        }
+
+        .logo span {
+            color: #e10600;
+        }
+
+        .nav-right {
+            color: #aaa;
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+
+        /* ---------- HERO ---------- */
+
+        .hero {
+            text-align: center;
+            padding: 90px 20px 60px;
+        }
+
+        .hero small {
+            color: #e10600;
+            font-weight: bold;
+            letter-spacing: 4px;
+        }
+
+        .hero h1 {
+            font-size: clamp(50px, 8vw, 100px);
+            margin-top: 15px;
+            font-weight: 900;
+            letter-spacing: -5px;
+            background: linear-gradient(90deg, #fff, #aaa);
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .hero p {
+            margin-top: 20px;
+            color: #999;
+            font-size: 17px;
+        }
+
+        /* ---------- TRACK GRID ---------- */
+
+        .tracks {
+            width: 86%;
+            max-width: 1400px;
+            margin: auto;
+            padding-bottom: 100px;
+
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        /* ---------- CARD ---------- */
+
+        .track-card {
+            position: relative;
+            height: 380px;
+            overflow: hidden;
+            border-radius: 20px;
+
+            background: #101014;
+            border: 1px solid rgba(255,255,255,0.1);
+
+            transition:
+                transform 0.4s ease,
+                box-shadow 0.4s ease,
+                border-color 0.4s ease;
+
+            cursor: pointer;
+        }
+
+        .track-card:hover {
+            transform: translateY(-12px) scale(1.015);
+            border-color: rgba(225,6,0,0.7);
+
+            box-shadow:
+                0 0 25px rgba(225,6,0,0.25),
+                0 20px 60px rgba(0,0,0,0.7);
+        }
+
+        /* ---------- IMAGE ---------- */
+
+        .track-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+
+            transition: transform 0.6s ease;
+        }
+
+        .track-card:hover img {
+            transform: scale(1.12);
+        }
+
+        /* ---------- DARK GRADIENT ---------- */
+
+        .track-card::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+
+            background:
+                linear-gradient(
+                    to top,
+                    rgba(0,0,0,0.95) 0%,
+                    rgba(0,0,0,0.45) 45%,
+                    rgba(0,0,0,0.05) 100%
+                );
+        }
+
+        /* ---------- TRACK INFO ---------- */
+
+        .track-info {
+            position: absolute;
+            z-index: 2;
+            bottom: 25px;
+            left: 25px;
+            right: 25px;
+        }
+
+        .track-number {
+            font-size: 13px;
+            color: #e10600;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .track-info h2 {
+            margin-top: 8px;
+            font-size: 28px;
+            font-weight: 800;
+        }
+
+        .track-info p {
+            margin-top: 5px;
+            color: #aaa;
+            font-size: 14px;
+        }
+
+        /* ---------- GLOW LINE ---------- */
+
+        .glow-line {
+            position: absolute;
+            z-index: 3;
+            bottom: 0;
+            left: 0;
+
+            width: 0;
+            height: 3px;
+
+            background: #e10600;
+            box-shadow: 0 0 15px #e10600;
+
+            transition: width 0.5s ease;
+        }
+
+        .track-card:hover .glow-line {
+            width: 100%;
+        }
+
+        /* ---------- FOOTER ---------- */
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            color: #555;
+            font-size: 13px;
+        }
+
+        /* ---------- MOBILE ---------- */
+
+        @media(max-width: 600px) {
+
+            nav {
+                padding: 0 5%;
+            }
+
+            .nav-right {
+                display: none;
+            }
+
+            .hero {
+                padding-top: 60px;
+            }
+
+            .hero h1 {
+                letter-spacing: -3px;
+            }
+
+            .tracks {
+                width: 92%;
+                grid-template-columns: 1fr;
+            }
+
+            .track-card {
+                height: 340px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+
+    <nav>
+        <div class="logo">
+            F<span>1</span> // TRACKS
+        </div>
+
+        <div class="nav-right">
+            FORMULA 1 • CIRCUITS • SPEED
+        </div>
+    </nav>
+
+
+    <!-- HERO -->
+
+    <section class="hero">
+
+        <small>THE WORLD OF</small>
+
+        <h1>F1 TRACKS</h1>
+
+        <p>
+            Iconic circuits. Legendary corners. Pure speed.
+        </p>
+
+    </section>
+
+
+    <!-- TRACKS -->
+
+    <section class="tracks">
+
+        <!-- MONACO -->
+
+        <div class="track-card">
+
+            <img
+                src="https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&w=1200&q=85"
+                alt="Monaco Grand Prix">
+
+            <div class="track-info">
+
+                <div class="track-number">
+                    01 • MONACO
+                </div>
+
+                <h2>Monaco</h2>
+
+                <p>
+                    Circuit de Monaco
+                </p>
+
+            </div>
+
+            <div class="glow-line"></div>
+
+        </div>
+
+
+        <!-- SILVERSTONE -->
+
+        <div class="track-card">
+
+            <img
+                src="https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?auto=format&fit=crop&w=1200&q=85"
+                alt="Silverstone">
+
+            <div class="track-info">
+
+                <div class="track-number">
+                    02 • UNITED KINGDOM
+                </div>
+
+                <h2>Silverstone</h2>
+
+                <p>
+                    Silverstone Circuit
+                </p>
+
+            </div>
+
+            <div class="glow-line"></div>
+
+        </div>
+
+
+        <!-- SUZUKA -->
+
+        <div class="track-card">
+
+            <img
+                src="https://images.unsplash.com/photo-1544829099-b9a0c07fad1a?auto=format&fit=crop&w=1200&q=85"
+                alt="Suzuka">
+
+            <div class="track-info">
+
+                <div class="track-number">
+                    03 • JAPAN
+                </div>
+
+                <h2>Suzuka</h2>
+
+                <p>
+                    Suzuka International Racing Course
+                </p>
+
+            </div>
+
+            <div class="glow-line"></div>
+
+        </div>
+
+
+        <!-- SPA -->
+
+        <div class="track-card">
+
+            <img
+                src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=1200&q=85"
+                alt="Spa Francorchamps">
+
+            <div class="track-info">
+
+                <div class="track-number">
+                    04 • BELGIUM
+                </div>
+
+                <h2>Spa-Francorchamps</h2>
+
+                <p>
+                    Circuit de Spa-Francorchamps
+                </p>
+
+            </div>
+
+            <div class="glow-line"></div>
+
+        </div>
+
+
+        <!-- MONZA -->
+
+        <div class="track-card">
+
+            <img
+                src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1200&q=85"
+                alt="Monza">
+
+            <div class="track-info">
+
+                <div class="track-number">
+                    05 • ITALY
+                </div>
+
+                <h2>Monza</h2>
+
+                <p>
+                    Autodromo Nazionale Monza
+                </p>
+
+            </div>
+
+            <div class="glow-line"></div>
+
+        </div>
+
+
+        <!-- INTERLAGOS -->
+
+        <div class="track-card">
+
+            <img
+                src="https://images.unsplash.com/photo-1504215680853-026ed2a45def?auto=format&fit=crop&w=1200&q=85"
+                alt="Interlagos">
+
+            <div class="track-info">
+
+                <div class="track-number">
+                    06 • BRAZIL
+                </div>
+
+                <h2>Interlagos</h2>
+
+                <p>
+                    Autódromo José Carlos Pace
+                </p>
+
+            </div>
+
+            <div class="glow-line"></div>
+
+        </div>
+
+
+        <!-- COTA -->
+
+        <div class="track-card">
+
+            <img
+                src="https://images.unsplash.com/photo-1493238792000-8113da705763?auto=format&fit=crop&w=1200&q=85"
+                alt="Circuit of the Americas">
+
+            <div class="track-info">
+
+                <div class="track-number">
+                    07 • USA
+                </div>
+
+                <h2>COTA</h2>
+
+                <p>
+                    Circuit of the Americas
+                </p>
+
+            </div>
+
+            <div class="glow-line"></div>
+
+        </div>
+
+
+        <!-- ABU DHABI -->
+
+        <div class="track-card">
+
+            <img
+                src="https://images.unsplash.com/photo-1547744681-8c4a299d6a7b?auto=format&fit=crop&w=1200&q=85"
+                alt="Abu Dhabi">
+
+            <div class="track-info">
+
+                <div class="track-number">
+                    08 • UAE
+                </div>
+
+                <h2>Yas Marina</h2>
+
+                <p>
+                    Yas Marina Circuit
+                </p>
+
+            </div>
+
+            <div class="glow-line"></div>
+
+        </div>
+
+    </section>
+
+
+    <footer>
+        F1 TRACKS • SPEED • PRECISION • RACING
+    </footer>
+
+</body>
+</html>
